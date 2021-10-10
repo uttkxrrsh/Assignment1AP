@@ -4,13 +4,14 @@ public class Hospital {
 	String hname;
 	String pincode;
 	int uhid;
-	ArrayList<Slot> hSlot = new ArrayList<>();
+	private ArrayList<Slot> hslot = new ArrayList<>();
 	public Hospital(String hname, String pincode, int uhid) {
 		this.hname = hname;
 		this.pincode = pincode;
 		this.uhid = uhid;
 	}
 	public void setSlot(Slot slot) {
-		this.hSlot.add(slot);
+		this.hslot.add(slot);
 	}
+	
 }
