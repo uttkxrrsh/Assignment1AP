@@ -74,27 +74,35 @@ public class CovinPortal {
 		Hospital hospital = null;
 		System.out.print("Enter Hospital ID: ");
 		hid = Integer.parseInt(sc.nextLine());
+		int flag = 0;
 		for(Hospital x : hList) {
 			if(x.uhid == hid) {
 				hospital = x;
+				flag =1;
+				break;
 			}
+		}
+		if(flag == 0) {
+			System.out.println("Wrong Hospital ID");
+			System.out.print("---------------------------------");
+			return;
 		}
 		System.out.print("Enter number of Slots to be added: ");
 		noofslots = Integer.parseInt(sc.nextLine());
 		for(int i = 0; i<noofslots; i++) {
-			System.out.print("Enter Day Number: ");
+			System.out.print("\nEnter Day Number: ");
 			daynumber = Integer.parseInt(sc.nextLine());
 			System.out.print("Enter Quantity: ");
 			quantity = Integer.parseInt(sc.nextLine());
-			System.out.print("Select Vaccine: ");
+			System.out.println("Select Vaccine: ");
 			for(int j = 0; j<vList.size(); j++) {
-				System.out.println(j + ". " + vList.get(j).vname+"\n");
+				System.out.println(j + ". " + vList.get(j).vname);
 			}
 			vno = Integer.parseInt(sc.nextLine());
 			vaccine = vList.get(vno);
 			Slot slot = new Slot(daynumber, quantity, vaccine);
 			hospital.setSlot(slot);
-			System.out.println("Slot added by Hospital" + hospital.hname + "for Day: " + daynumber + ", Available Quantity: " + vno + " of Vaccine" + vaccine.vname);
+			System.out.println("Slot added by Hospital " + hospital.hname + " for Day: " + daynumber + ", Available Quantity: " + quantity + " of Vaccine " + vaccine.vname);
 			System.out.print("---------------------------------");
 		}
 	}
@@ -108,7 +116,6 @@ public class CovinPortal {
 		Hospital h = null;
 		int flag = 0;
 		int uhid;
-		boolean success;
 		System.out.print("Enter patient Unique ID: ");
 		uid = sc.nextLine();
 		for(Citizen c: cList) {
@@ -132,7 +139,7 @@ public class CovinPortal {
 			pincode = sc.nextLine();
 			for(Hospital x: hList) {
 				if(x.pincode.equals(pincode)) {
-					System.out.println(x.uhid + x.hname);
+					System.out.println(x.uhid +" " +  x.hname);
 					flag = 1;
 				}
 			}
@@ -148,6 +155,7 @@ public class CovinPortal {
 				if(x.uhid == uhid) {
 					h = x;
 					flag =1;
+					break;
 				}
 			}
 			if(flag == 0) {
@@ -155,18 +163,15 @@ public class CovinPortal {
 				System.out.print("---------------------------------");
 				return;
 			}
-			success = h.bookSlot(citizen,"0");
-			if(!success) {
-				System.out.print("---------------------------------");
-				return;
-			}
+			h.bookSlot(citizen,"0");
+			System.out.print("---------------------------------");
 			break;
 		case 2:
 			System.out.print("Enter vaccine name: ");
 			vname = sc.nextLine();
 			for(Hospital x: hList) {
 				if(x.hasVaccine(vname)) {
-					System.out.println(x.uhid + x.hname);
+					System.out.println(x.uhid + " " +x.hname);
 				}
 			}
 			System.out.print("Enter hospital id: ");
@@ -182,11 +187,8 @@ public class CovinPortal {
 				System.out.print("---------------------------------");
 				return;
 			}
-			success = h.bookSlot(citizen,vname);
-			if(!success) {
-				System.out.print("---------------------------------");
-				return;
-			}
+			h.bookSlot(citizen,vname);
+			System.out.print("---------------------------------");
 			break;
 		default:
 			System.out.println("Wrong Choice");
@@ -196,48 +198,91 @@ public class CovinPortal {
 	}
 	
 	public static void listSlots() {
-		
+		int uhid;
+		int flag =0;
+		System.out.print("Enter Hospital ID: ");
+		uhid = Integer.parseInt(sc.nextLine());
+		for(Hospital h: hList) {
+			if(h.uhid == uhid){
+				h.printSlot();
+				flag =1;
+			}
+		}
+		if(flag == 0) {
+			System.out.println("Wrong Hospital ID");
+		}
+		System.out.print("---------------------------------");
 	}
 	
 	public static void cStatus() {
-		
+		String uid;
+		String status;
+		int flag =0;
+		System.out.print("Enter Patient ID: ");
+		uid = sc.nextLine();
+		for(Citizen c: cList) {
+			if(c.uid.equals(uid)) {
+				flag = 1;
+				status = c.checkStatus();
+				if(status.equals("REGISTERED")) {
+					System.out.println("Citizen " + status);
+				}
+				else {
+					String v = c.checkvType();
+					System.out.println("Citizen "+status);
+					System.out.println("Vaccine Given: "+ v);
+					System.out.println("Number of Doses given: "+c.doseadmin);
+					if(status.equals("PARTIALLY VACCINATED")) {
+						System.out.println("Next Dose due date: "+c.nextdate);
+					}
+				}
+			}
+			if(flag==1) {
+				break;
+			}
+		}
+		if(flag == 0) {
+			System.out.println("Wrong Patient ID");
+		}
+		System.out.print("---------------------------------");
 	}
-	
-	
 	
 	
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int choice=0;
+		String choice="0";
 		System.out.println("Cowin portal initialised...");
-		while(choice!=8) {
-			System.out.println("\n---------------------------------\n1. Add Vaccine\n2. Register Hospital\n3. Register Citizen\n4. Add Slot for Vaccination\n5. Book Slot for Vaccination\n6. List all slots for a hospital\n7. Check Vaccination Status\n8. Exit\n---------------------------------");
-			choice = Integer.parseInt(sc.nextLine());
+		System.out.print("---------------------------------");
+		while(choice!="8") {
+			System.out.println("\n1. Add Vaccine\n2. Register Hospital\n3. Register Citizen\n4. Add Slot for Vaccination\n5. Book Slot for Vaccination\n6. List all slots for a hospital\n7. Check Vaccination Status\n8. Exit\n---------------------------------");
+			choice = sc.nextLine();
 			switch(choice) {
-			case 1:
+			case "1":
 				addVaccine();
 				break;
-			case 2:
+			case "2":
 				regHospital();
 				break;
-			case 3:
+			case "3":
 				regCitizen();
 				break;
-			case 4:
+			case "4":
 				addSlot();
 				break;
-			case 5:
+			case "5":
 				bookSlot();
 				break;
-			case 6:
+			case "6":
 				listSlots();
 				break;
-			case 7:
+			case "7":
 				cStatus();
 				break;
-			case 8:
+			case "8":
 				return;
+			default:
+				System.out.print("Wrong choice");
 			}
 		}
 	}

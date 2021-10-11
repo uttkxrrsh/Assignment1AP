@@ -3,10 +3,10 @@ public class Citizen {
 	String cname;
 	int age;
 	String uid;
-	private String status = "Registered";
+	private String status = "REGISTERED";
 	int nextdate=0;
 	int doseadmin=0;
-	private Vaccine vaccine = null;
+	String vaccine = null;
 	public Citizen(String cname,int age, String uid) {
 		this.cname = cname;
 		this.age = age;
@@ -18,13 +18,17 @@ public class Citizen {
 		}
 		return false;
 	}
-	public Vaccine checkvType() {
+	public String checkvType() {
 		return vaccine;
 	}
 	public String checkStatus() {
-		return status;
+		return this.status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public void setVaccine(String vname) {
+		this.vaccine = vname;
 	}
 }
